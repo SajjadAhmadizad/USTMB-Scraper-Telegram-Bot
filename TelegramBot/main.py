@@ -136,7 +136,7 @@ def get_lesson(message):
 
 def get_lesson_status_search(message, ):
     if message.text in ["دروس دارای ظرفیت", "دروس تکمیل"]:
-        bot.reply_to(message, text="کد یا نام درس را وارد کنید :")
+        bot.reply_to(message, text="کد یا نام درس را وارد کنید (حداقل 3 حرف):")
         bot.register_next_step_handler(message, get_lesson_name, message.text)
     else:
         bot.send_message(message.chat.id, text="ورودی نادرست است!")
@@ -144,6 +144,9 @@ def get_lesson_status_search(message, ):
 
 
 def get_lesson_name(message, lesson_status):
+    if len(message.text) < 3:
+        bot.send_message(message.chat.id, text="ورودی باید حداقل دارای 3 حرف باشد!")
+        return
     bot.send_message(chat_id=message.chat.id, text="درحال دریافت اطلاعات...")
     lesson = message.text
     lesson_status = "NotComplete" if lesson_status == "دروس دارای ظرفیت" else "Complete"
