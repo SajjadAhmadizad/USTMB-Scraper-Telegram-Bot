@@ -151,14 +151,12 @@ def get_lesson_name(message, lesson_status):
     lesson = message.text
     lesson_status = "NotComplete" if lesson_status == "دروس دارای ظرفیت" else "Complete"
     for val in get_lessons(lesson, lesson_status):
-        if val["status"] in ["Error", "NotFound", "Pages"]:
+        if type(val["message"]) == str:
             bot.send_message(message.chat.id, text=val["message"], reply_markup=start_markup())
-        elif val["status"] == "Found":
-            if type(val["message"]) == str:
-                bot.send_message(message.chat.id, text=val["message"], reply_markup=start_markup())
-            elif type(val["message"]) == list:
-                for i in val["message"]:
-                    bot.send_message(message.chat.id, text=i, reply_markup=start_markup())
+        elif type(val["message"]) == list:
+            for i in val["message"]:
+                bot.send_message(message.chat.id, text=i, reply_markup=start_markup())
+
 
 
 @bot.message_handler(func=lambda message: message.text == "دروس دانشجو در نیمسال")
