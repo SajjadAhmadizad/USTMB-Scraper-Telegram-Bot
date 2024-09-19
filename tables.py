@@ -1,5 +1,6 @@
 import sqlalchemy
 import os
+import datetime
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, insert
 from sqlalchemy import Column, BigInteger, String, Date, DateTime, JSON
