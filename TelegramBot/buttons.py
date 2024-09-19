@@ -2,8 +2,16 @@ import telebot
 from telebot.types import InlineKeyboardButton
 
 
+def authentication_markup():
+    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    kb.row(
+        InlineKeyboardButton("احراز هویت", callback_data="authentication"),
+    )
+    return kb
+
+
 def start_markup():
-    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True,one_time_keyboard=True)
+    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     kb.row(
         InlineKeyboardButton("دروس ارائه شده", callback_data="get_lesson"),
         InlineKeyboardButton("انتخاب واحد", callback_data="unit_selection"),
@@ -15,13 +23,14 @@ def start_markup():
 
 
 def select_delete_unit_markup():
-    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=1)
+    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     kb.row(
         InlineKeyboardButton("حذف درس", callback_data="remove_lesson"),
         InlineKeyboardButton("افزودن درس", callback_data="add_lesson"),
     )
     kb.add(InlineKeyboardButton("بازگشت به منو اصلی", callback_data="rollback_to_menu"))
     return kb
+
 
 def cancel_inline_markup():
     kb = telebot.types.InlineKeyboardMarkup()
@@ -30,12 +39,14 @@ def cancel_inline_markup():
     )
     return kb
 
+
 def rollback_to_menu_markup():
-    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=1)
+    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     kb.row(
         InlineKeyboardButton("بازگشت به منو اصلی", callback_data="rollback_to_menu"),
     )
     return kb
+
 
 def lesson_search_markup():
     kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
