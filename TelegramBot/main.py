@@ -6,11 +6,17 @@ from telebot.types import ReplyKeyboardRemove, CallbackQuery
 from scrap import *
 from functools import wraps
 from config import TELEGRAM_BOT_TOKEN, ALLOWED_USER_IDS
-from buttons import start_markup, select_delete_unit_markup, cancel_inline_markup, lesson_search_markup
+from buttons import start_markup, select_delete_unit_markup, cancel_inline_markup, lesson_search_markup, \
+    authentication_markup
+from tables import Student, StudentSession, sessionmaker, create_engine, exists, and_
 
 state_storage = StateMemoryStorage()
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN, state_storage=state_storage)
+
+engine = create_engine("sqlite:///../database.db", echo=True)
+Session = sessionmaker(bind=engine)
+session = Session()
 
 
 class MyStates(StatesGroup):
@@ -27,12 +33,63 @@ class MyStates(StatesGroup):
 def restrict_access(func):
     @wraps(func)
     def wrapped(message, *args, **kwargs):
-        if message.from_user.id not in ALLOWED_USER_IDS:
-            bot.reply_to(message, "شما اجازه دسترسی به این ربات را ندارید.")
+        student = session.query(
+            Student
+        ).filter(
+            Student.telegram_id == message.from_user.id
+        ).first()
+        if student is None:
+            bot.send_message(message.chat.id, "ابتدا باید احراز هویت کنید...", reply_markup=authentication_markup())
             return
         return func(message, *args, **kwargs)
 
     return wrapped
+
+
+@bot.message_handler(func=lambda message: message.text == "احراز هویت")
+def authentication(message):
+    result = session.query(Student.telegram_id).filter(Student.telegram_id == message.from_user.id).first()
+
+    if result:
+        bot.send_message(
+            message.chat.id,
+            text="شما از قبل احراز هویت کرده اید"
+        )
+        return
+    new_student = Student(
+        telegram_id=message.from_user.id,
+    )
+    bot.send_message(message.chat.id, "شماره دانشجویی خود را وارد کنید:")
+    bot.register_next_step_handler(message, receive_student_code, new_student)
+
+
+def receive_student_code(message, new_student: Student):
+    if message.text.isdigit():
+        new_student.student_code = int(message.text)
+        bot.send_message(message.chat.id, "کد ملی خود را وارد کنید:")
+        bot.register_next_step_handler(message, receive_national_code, new_student)
+    else:
+        bot.send_message(
+            message.chat.id, "ورودی نادرست است!"
+        )
+
+
+def receive_national_code(message, new_student: Student):
+    if message.text.isdigit():
+        new_student.national_code = int(message.text)
+        new_student.is_active = True
+        session.add(new_student)
+        session.commit()
+
+        bot.send_message(
+            message.chat.id,
+            "احراز هویت با موفقیت انجام شد",
+            reply_markup=start_markup()
+        )
+    else:
+        bot.send_message(
+            message.chat.id, "ورودی نادرست است!"
+        )
 
 
 @bot.message_handler(func=lambda message: message.text == "انتخاب واحد")
