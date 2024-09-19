@@ -34,7 +34,7 @@ class Student(Base):
     @validates('student_code', 'national_code')
     def validate_codes(self, key, value):
         if not isinstance(value, int):
-            raise ValueError(f"{"کد ملی" if key == "national_code" else "شماره دانشجویی"} باید یک عدد صحیح باشد")
+            raise ValueError(f'{"کد ملی" if key == "national_code" else "شماره دانشجویی"} باید یک عدد صحیح باشد')
         if key == 'national_code' and len(str(value)) != 10:
             raise ValueError("کد ملی باید دقیقاً 10 رقم باشد")
         elif key == "student_code" and len(str(value)) != 12:
