@@ -2,7 +2,9 @@ import telebot
 from telebot import custom_filters, StateMemoryStorage
 from telebot.states import StatesGroup, State
 from telebot.types import ReplyKeyboardRemove, CallbackQuery
-
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from scrap import *
 from functools import wraps
 from config import TELEGRAM_BOT_TOKEN
