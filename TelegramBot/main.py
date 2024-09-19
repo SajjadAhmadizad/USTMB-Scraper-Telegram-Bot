@@ -5,7 +5,7 @@ from telebot.types import ReplyKeyboardRemove, CallbackQuery
 
 from scrap import *
 from functools import wraps
-from config import TELEGRAM_BOT_TOKEN, ALLOWED_USER_IDS
+from config import TELEGRAM_BOT_TOKEN
 from buttons import start_markup, select_delete_unit_markup, cancel_inline_markup, lesson_search_markup, \
     authentication_markup
 from tables import Student, StudentSession, sessionmaker, create_engine, exists, and_
@@ -216,7 +216,6 @@ def get_lesson_name(message, lesson_status):
                 bot.send_message(message.chat.id, text=i, reply_markup=start_markup())
 
 
-
 @bot.message_handler(func=lambda message: message.text == "دروس دانشجو در نیمسال")
 @restrict_access
 def lessons_in_semester(message):
@@ -252,14 +251,9 @@ def handel_inline_buttons(call: CallbackQuery):
 @bot.message_handler(func=lambda x: True)
 @restrict_access
 def send_welcome(message):
-    if message.from_user.id not in ALLOWED_USER_IDS:
-        bot.reply_to(message, "متأسفانه شما مجاز به استفاده از این ربات نیستید.")
-        return
     bot.reply_to(message, "خب چیکار میخوایی بکنی؟", reply_markup=start_markup())
 
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 
 bot.infinity_polling(none_stop=True)
-
-get_lesson_temporary_work_report()
