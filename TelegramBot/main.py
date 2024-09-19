@@ -201,13 +201,14 @@ def get_lesson_status_search(message, ):
 
 
 def get_lesson_name(message, lesson_status):
+    user_id = message.from_user.id
     if len(message.text) < 3:
         bot.send_message(message.chat.id, text="ورودی باید حداقل دارای 3 حرف باشد!")
         return
     bot.send_message(chat_id=message.chat.id, text="درحال دریافت اطلاعات...")
     lesson = message.text
     lesson_status = "NotComplete" if lesson_status == "دروس دارای ظرفیت" else "Complete"
-    for val in get_lessons(lesson, lesson_status):
+    for val in get_lessons(lesson, user_id, lesson_status=lesson_status):
         if type(val["message"]) == str:
             bot.send_message(message.chat.id, text=val["message"], reply_markup=start_markup())
         elif type(val["message"]) == list:
@@ -219,20 +220,20 @@ def get_lesson_name(message, lesson_status):
 @bot.message_handler(func=lambda message: message.text == "دروس دانشجو در نیمسال")
 @restrict_access
 def lessons_in_semester(message):
-    text = get_my_courses_in_this_semester()
+    text = get_my_courses_in_this_semester(message.from_user.id)
     bot.send_message(message.chat.id, text=text)
 
 
 @bot.message_handler(func=lambda message: message.text == "دریافت کارنامه موقت")
 @restrict_access
 def get_temporary_work_report(message):
-    bot.send_message(message.chat.id, get_lesson_temporary_work_report())
+    bot.send_message(message.chat.id, get_lesson_temporary_work_report(message.from_user.id))
 
 
 @bot.message_handler(func=lambda message: message.text == "تائیدیه انتخاب واحد")
 @restrict_access
 def unit_select_confirmation(message):
-    response = get_unit_confirmation(user_id=None)
+    response = get_unit_confirmation(user_id=message.from_user.id)
     if response["status"] == "Error":
         bot.send_message(message.chat.id, text=response["message"])
         return
