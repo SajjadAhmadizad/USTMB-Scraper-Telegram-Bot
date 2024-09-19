@@ -1,16 +1,24 @@
 import base64
+import datetime
 import os
+import hashlib
 from dotenv import load_dotenv
 import requests
 import pickle
 from bs4 import BeautifulSoup
 import tabulate
 
+from tables import Student, StudentSession, create_engine, sessionmaker
+
+engine = create_engine("sqlite:///../database.db", echo=True)
+Session = sessionmaker(bind=engine)
+session = Session()
+
 load_dotenv()
 
 
-def login():
-    print("Login Again...")
+def login(student: Student):
+    std, student_session = student
     login_data = {
         "Anthem_UpdatePage": True,
         "__EVENTTARGET": "ctl34",
@@ -18,8 +26,8 @@ def login():
         "__VIEWSTATE": "",
         "__VIEWSTATEGENERATOR": "F82B3F21",
         "__EVENTVALIDATION": "",
-        "UserCode": os.getenv("USER_CODE"),
-        "KeyCode": os.getenv("KEY_CODE"),
+        "UserCode": std.student_code,
+        "KeyCode": hashlib.md5(str(std.national_code).encode()).hexdigest(),
         "txtUsercode": None,
         "txtNationalsms": None,
         "txtEmail": None,
@@ -47,8 +55,8 @@ def login():
         "txtNational": None,
         "txtRegGuest": None,
     }
+    print("Login Again...")
     login_res = requests.post("https://amoozesh.ustmb.ac.ir/SamaWeb/login.aspx?Anthem_CallBack=true", data=login_data)
-
     if login_res.status_code == 200:
         cookie = {
             ".ASPXAUTH": login_res.cookies[".ASPXAUTH"],
@@ -63,16 +71,26 @@ def login():
             "Menu": None,
             "SL_G_WPT_TO": "en",
         }
-        with open("cache.txt", "wb") as cache_file:
-            cache_file.write(pickle.dumps(cookie))
+
+        # Add this session in database for user
+        if student_session:
+            student_session.ASPXAUTH = cookie[".ASPXAUTH"]
+            student_session.NET_SessionId = cookie["ASP.NET_SessionId"]
+            student_session.expires_at = datetime.datetime.now()  # TODO: add expires_at
+        else:
+            new_session = StudentSession(
+                student_id=std.id,
+                NET_SessionId=cookie["ASP.NET_SessionId"],
+                ASPXAUTH=cookie[".ASPXAUTH"],
+                Menu="main",
+                expires_at=datetime.datetime.now()  # TODO: add expires_at
+            )
+            session.add(new_session)
+        session.commit()
+
         return cookie
     else:
         raise ValueError("some problem in login!")
-
-
-def get_cookies_from_cache():
-    with open("cache.txt", "rb") as file:
-        return pickle.load(file)
 
 
 def get_student_image_with_cookies(cookies: dict):
@@ -86,25 +104,48 @@ def get_student_image_with_cookies(cookies: dict):
         raise ConnectionError
 
 
-def request_to_url_with_cache_or_login(url: str, method: str, data: dict | None = None):
+def request_to_url_with_cookie_or_login(url: str, method: str, user_id: int, data: dict | None = None):
     try:
-        cookies = get_cookies_from_cache()
-        response = requests.request(method, url, cookies=cookies,
-                                    data=data)  # => It return error if there is a problem to request
+        student = session.query(
+            Student, StudentSession
+        ).join(
+            StudentSession, Student.id == StudentSession.student_id, isouter=True
+        ).filter(
+            Student.telegram_id == user_id
+        ).first()
+
+        std, student_session = student
+        if student_session:
+            cookies = {
+                'ASP.NET_SessionId': student_session.NET_SessionId,
+                '.ASPXAUTH': student_session.ASPXAUTH,
+                'Menu': None,
+                'SL_G_WPT_TO': 'en'
+            }
+        else:
+            # There isn't any session for this student
+            cookies = {}
+        response = requests.request(
+            method,
+            url,
+            cookies=cookies,
+            data=data
+        )  # => It return error if there is a problem to request
         soup: BeautifulSoup = BeautifulSoup(response.content.decode("utf-8"), 'html.parser')
 
         if "ورود به سیستم آموزش" in soup.title.string:
-            # The cookie in cache.txt is no longer valid.
-            print("# The cookie in cache.txt is no longer valid.")
-            cookies = login()
+            # The cookie in database is no longer valid or there isn't any cookie.
+            print("# The cookie in database is no longer valid or there isn't any cookie.")
+            print(std.id, std.telegram_id)
+            cookies = login(student)
             response = requests.request(method, url, cookies=cookies, data=data)
             title = BeautifulSoup(response.content.decode("utf-8")).title.string
             if "ورود به سیستم آموزش" in title:
                 # it is the site's issue.
                 raise ConnectionError
         else:
-            # The cookie in cache.txt is still valid.
-            print("# The cookie in cache.txt is still valid.")
+            # The cookie in db is still valid.
+            print("# The cookie in db is still valid.")
             pass
         return {
             "status": "OK",
@@ -117,15 +158,13 @@ def request_to_url_with_cache_or_login(url: str, method: str, data: dict | None 
 
 
 def main_page():
-    cookies = login()
+    cookies = login(student="")
     res = requests.get("https://amoozesh.ustmb.ac.ir/SamaWeb/Index.aspx", cookies=cookies)
     with open("../eawiyrfweb.html", "w", encoding="utf-8") as file:
         file.write(res.content.decode("utf-8"))
 
 
-# main_page()
-
-def get_lessons(lesson: str, lesson_status=None, page_number=None):
+def get_lessons(lesson: str, user_id: int, lesson_status: str | None = None, page_number: str | None = None):
     if lesson.isdigit():
         lesson = int(lesson)
     payload = {
@@ -136,11 +175,11 @@ def get_lessons(lesson: str, lesson_status=None, page_number=None):
         "PageNum": page_number
     }
     try:
-        response: dict = request_to_url_with_cache_or_login(
+        response: dict = request_to_url_with_cookie_or_login(
             "https://amoozesh.ustmb.ac.ir/SamaWeb/LessonReport.asp",
             "post",
-            payload,
-            # user_id
+            user_id,
+            payload
         )  # => If there is a problem in the request to https://amoozesh.ustmb.ac.ir, it returns ConnectionError
 
         soup: BeautifulSoup = BeautifulSoup(response.get("response").content.decode("utf-8"), 'html.parser')
@@ -206,12 +245,12 @@ def get_lessons(lesson: str, lesson_status=None, page_number=None):
         }
 
 
-def get_my_courses_in_this_semester():
+def get_my_courses_in_this_semester(user_id: int):
     try:
-        response = request_to_url_with_cache_or_login(
+        response = request_to_url_with_cookie_or_login(
             "https://amoozesh.ustmb.ac.ir/SamaWeb/TermStudentLessons.asp",
             "post",
-            # user_id
+            user_id
         )  # => If there is a problem in the request to https://amoozesh.ustmb.ac.ir, it returns ConnectionError
     except ConnectionError:
         return "مشکلی در برقراری ارتباط با سایت وجود دارد!"
@@ -233,11 +272,11 @@ def get_unit_confirmation(user_id: int | None = None):
         "strStudentCode": os.environ.get("USER_CODE")
     }
     try:
-        response = request_to_url_with_cache_or_login(
+        response = request_to_url_with_cookie_or_login(
             "https://amoozesh.ustmb.ac.ir/SamaWeb/WorkBookPrintTerm.asp",
             "post",
-            payload,
-            # user_id
+            user_id,
+            payload
         )  # => If there is a problem in the request to https://amoozesh.ustmb.ac.ir, it returns ConnectionError
 
         student_image = get_student_image_with_cookies(
@@ -268,15 +307,22 @@ def get_unit_confirmation(user_id: int | None = None):
         }
 
 
-def get_lesson_temporary_work_report():
+def get_lesson_temporary_work_report(user_id: int):
     try:
-        res = request_to_url_with_cache_or_login(
+        res = request_to_url_with_cookie_or_login(
             "https://amoozesh.ustmb.ac.ir/SamaWeb/TemproryTermWorkBookReport.asp",
-            "get"
+            "get",
+            user_id
         )
         soup: BeautifulSoup = BeautifulSoup(res.get("response").content.decode("utf-8"), 'html.parser')
-        table = soup.find("table", attrs={"border": "1", "cellpadding": "1", "bordercolor": "#C0C0C0",
-                                          "style": "border-collapse: collapse", "cellspacing": "0", "width": "90%"})
+        table = soup.find("table", attrs={
+            "border": "1",
+            "cellpadding": "1",
+            "bordercolor": "#C0C0C0",
+            "style": "border-collapse: collapse",
+            "cellspacing": "0",
+            "width": "90%"
+        })
 
         data = [data.text for data in table.select("tr td font")]
         data = [data[num:num + 7] for num in range(0, len(data), 7)]
@@ -284,12 +330,3 @@ def get_lesson_temporary_work_report():
         return tabulate.tabulate(data[1:], headers=data[0])
     except ConnectionError:
         return ""
-
-
-def invalid():
-    with open("TelegramBot/cache.txt", "wb") as file:
-        file.write(pickle.dumps({"a": "aa"}))
-
-
-# invalid()
-from pickle import FALSE
