@@ -10,7 +10,7 @@ import tabulate
 
 from tables import Student, StudentSession, create_engine, sessionmaker
 
-engine = create_engine("sqlite:///../database.db", echo=True)
+engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 

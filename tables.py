@@ -1,4 +1,3 @@
-import sqlalchemy
 import os
 import datetime
 from dotenv import load_dotenv

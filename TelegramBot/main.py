@@ -16,7 +16,7 @@ state_storage = StateMemoryStorage()
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN, state_storage=state_storage)
 
-engine = create_engine("sqlite:///../database.db", echo=True)
+engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
