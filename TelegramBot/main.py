@@ -1,9 +1,12 @@
+import time
+
 import telebot
 from telebot import custom_filters, StateMemoryStorage
 from telebot.states import StatesGroup, State
 from telebot.types import ReplyKeyboardRemove, CallbackQuery
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from scrap import *
 from functools import wraps
@@ -240,6 +243,14 @@ def unit_select_confirmation(message):
         return
     with open(response["file_address"], 'rb') as file:
         bot.send_document(message.chat.id, file)
+
+
+@bot.message_handler(func=lambda message: message.text == "دریافت کارنامه کامل")
+@restrict_access
+def get_full_work_report(message):
+    for response in get_work_report(user_id=message.from_user.id):
+        bot.send_message(message.chat.id, response["semester"] + "\n" + response["data"])
+        time.sleep(1)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "cancel")

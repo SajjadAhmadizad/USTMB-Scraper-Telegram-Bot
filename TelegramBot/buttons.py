@@ -19,6 +19,7 @@ def start_markup():
     kb.add(InlineKeyboardButton("دروس دانشجو در نیمسال", callback_data="lessons_in_semester"))
     kb.add(InlineKeyboardButton("تائیدیه انتخاب واحد", callback_data="unit_select_confirmation"))
     kb.add(InlineKeyboardButton("دریافت کارنامه موقت", callback_data="lesson_term_work_report"))
+    kb.add(InlineKeyboardButton("دریافت کارنامه کامل", callback_data="lesson_term_work_report"))
     return kb
 
 

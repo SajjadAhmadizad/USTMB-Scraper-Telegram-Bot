@@ -25,8 +25,8 @@ class Student(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     telegram_id = Column(BigInteger, unique=True, nullable=False)
     is_active = Column(Boolean, default=False)
-    student_code = Column(BigInteger, unique=True, nullable=False)
-    national_code = Column(BigInteger, unique=True, nullable=False)
+    student_code = Column(BigInteger, nullable=False)
+    national_code = Column(BigInteger, nullable=False)
 
     sessions = relationship("StudentSession", back_populates="student", uselist=False)
 
@@ -47,7 +47,7 @@ class StudentSession(Base):
     id = Column(Integer, primary_key=True)
     student_id = Column(BigInteger, ForeignKey('Student.id'), nullable=False)
     NET_SessionId = Column("ASP.NET_SessionId", String(255), unique=True, nullable=False)
-    ASPXAUTH = Column(".ASPXAUTH", String(255), unique=True, nullable=False)
+    ASPXAUTH = Column(".ASPXAUTH", String(450), unique=True, nullable=False)
     Menu = Column("Menu", String(20), nullable=True)
     expires_at = Column(DateTime, nullable=False)
 
@@ -57,15 +57,60 @@ class StudentSession(Base):
         UniqueConstraint('student_id', name='uq_student_session'),
     )
 
-# base.metadata.create_all(engine)
 
 if __name__ == "__main__":
     pass
-    # Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 
-# for t in teachers:
-#     print(t.id, t.name)
+    # INSERT DATA
 
-# Insert
+    # new_student = Student(telegram_id=1234, student_code=123456789012, national_code=1234567890)
+    # session.add(new_student)
+    # session.flush()
+    #
+    # print(new_student.id)
+    #
+    # new_session = StudentSession(
+    #     student_id=new_student.id,
+    #     NET_SessionId="XXXXXX",
+    #     ASPXAUTH="YYYYY",
+    #     expires_at=datetime.datetime.now() + datetime.timedelta(10)
+    # )
+    # kos.add(new_session)
+    # kos.commit()
 
-# session.add(Teacher)
+    # SELECT DATA
+
+    # query = session.query(
+    #     StudentSession, Student
+    # ).join(
+    #     Student, StudentSession.student_id == Student.id
+    # )
+    # results = query.all()
+    #
+    # print(results)
+
+    # new_session = StudentSession(student_id=1, NET_SessionId="session123", ASPXAUTH="auth_token",
+    #                              Menu="main", expires_at=datetime.datetime.now())
+    # session.add(new_session)
+    # session.commit()
+
+    # result = session.query(
+    #     Student, StudentSession
+    # ).join(
+    #     StudentSession, Student.id == StudentSession.student_id, isouter=True
+    # ).filter(
+    #     Student.telegram_id == 1212
+    # ).first()
+    #
+
+    # if result:
+    #     student, student_session = result
+    #     print(f"Student ID: {student.id}, Telegram ID: {student.telegram_id}")
+    #     # print(f"Session ID: {student_session.id}, Session Expires At: {student_session.expires_at}")
+    #     if student_session:
+    #         print(f"Session ID: {student_session.NET_SessionId}, Session Expires At: {student_session.expires_at}")
+    #     else:
+    #         pass
+    # else:
+    #     print("No student found with this Telegram ID.")

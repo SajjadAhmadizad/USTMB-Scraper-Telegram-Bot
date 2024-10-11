@@ -2,11 +2,15 @@ import base64
 import datetime
 import os
 import hashlib
+import re
+import arabic_reshaper
+from bidi.algorithm import get_display
 from dotenv import load_dotenv
 import requests
 import pickle
 from bs4 import BeautifulSoup
 import tabulate
+from soupsieve import select
 
 from tables import Student, StudentSession, create_engine, sessionmaker
 
@@ -15,6 +19,25 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 load_dotenv()
+
+
+def convert_to_persian_numbers(text):
+    english_to_persian = str.maketrans('0123456789', '۰۱۲۳۴۵۶۷۸۹')
+    return text.translate(english_to_persian)
+
+
+import tabulate
+
+
+def rtl_tabulate(data, headers):
+    reversed_data = [row[::-1] for row in data]
+    reversed_headers = headers[::-1]
+
+    table = tabulate.tabulate(reversed_data, reversed_headers)
+
+    lines = table.split('\n')
+
+    return '\n'.join(lines)
 
 
 def login(student: Student):
@@ -328,5 +351,29 @@ def get_lesson_temporary_work_report(user_id: int):
         data = [data[num:num + 7] for num in range(0, len(data), 7)]
 
         return tabulate.tabulate(data[1:], headers=data[0])
+    except ConnectionError:
+        return ""
+
+
+def get_work_report(user_id: int):
+    try:
+        res = request_to_url_with_cookie_or_login(
+            "https://amoozesh.ustmb.ac.ir/SamaWeb/WorkBookRequest.asp",
+            "get",
+            user_id
+        )
+        answer = ""
+        soup: BeautifulSoup = BeautifulSoup(res.get("response").content.decode("utf-8"), 'html.parser')
+        rows = soup.find_all('div', attrs={"class": "tab-pane"})
+        header = "کددرس,نام درس,واحد,نمره,وضعیت"
+        for div in rows:
+            semester = div.find_next().select("font")[0].text
+            ans = []
+            li = re.findall("size=\"2\">(.*?)<", str(div.find_all("font")[6]).replace("\n", " "))
+            while "" in li:
+                li[li.index("")] = "گ.ن"
+            for i in range(0, len(li), 5):
+                ans.append(li[i:i + 5])
+            yield {"semester": semester, "data": rtl_tabulate(ans, header.split(","))}
     except ConnectionError:
         return ""
