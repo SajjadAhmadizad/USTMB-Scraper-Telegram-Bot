@@ -1,62 +1,57 @@
-University Student Tasks Management Telegram Bot.\n
-This project is a web scraping-based Telegram bot that allows students from [Mazandaran University of Science and Technology(https://ustmb.ac.ir)] to manage their academic tasks easily via Telegram. By simply entering their student code and national ID, students can access various services Such as viewing the lessons offered, checking the transcripts and more.
+University Student Tasks Management Telegram Bot.<br/>
+This project is a web scraping-based Telegram bot that allows students from [Mazandaran University of Science and Technology(https://ustmb.ac.ir)] to manage their academic tasks easily via Telegram. By simply entering their student code and national ID, students can access various services Such as viewing the lessons offered, checking the transcripts and more.<br/><br/>
 
-Features
-View Offered Courses: Students can see the list of courses available for the current term.
-View Temporary Transcript: Check grades of the current term in real-time.
-View Complete Transcript: Access full academic records, including all past grades.
-Class Selection (Coming Soon): Soon, students will be able to select courses for the next term directly from the bot.
+Features<br/>
+View Offered Courses: Students can see the list of courses available for the current term.<br/>
+View Temporary Transcript: Check grades of the current term in real-time.<br/>
+View Complete Transcript: Access full academic records, including all past grades.<br/>
+Class Selection (Coming Soon): Soon, students will be able to select courses for the next term directly from the bot.<br/><br/>
 
-How It Works
-Login: Students enter their student code and national ID to log in.
-Task Selection: After login, students can select the service they want (view courses, check transcripts, etc.).
-Response: The bot scrapes the university website and returns the requested information to the user.
-Installation
-To run this bot on your local machine, follow these steps:
+How It Works<br/>
+Login: Students enter their student code and national ID to log in.<br/>
+Task Selection: After login, students can select the service they want (view courses, check transcripts, etc.).<br/>
+Response: The bot scrapes the university website and returns the requested information to the user.<br/>
+Installation<br/>
+To run this bot on your local machine, follow these steps:<br/>
 
-Clone the repository:
+Clone the repository:<br/>
 
-bash
-```
-Copy code
+```bash
 git clone [https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot](https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot)
 cd USTMB-Scraper-Telegram-Bot
 ```
-Install required dependencies:
-```
-bash
-Copy code
+Install required dependencies:<br/>
+```bash
 pip install -r requirements.txt
 ```
-ش
+<br/>
 Set up your environment variables:
+<br/>
+TELEGRAM_BOT_TOKEN: Your bot's Telegram API token.<br/>
+DATABASE_URL: Your database url.<br/>
+TERM_CODE: Current term code(like 14031 or 14022).<br/><br/>
 
-TELEGRAM_BOT_TOKEN: Your bot's Telegram API token.
-DATABASE_URL: Your database url.
-TERM_CODE: Current term code(like 14031 or 14022).
-
-And then Run the bot:
-```
-bash
-Copy code
+And then Run the bot:<br/>
+```bash
 python TelegramBot/main.py
 ```
-Technologies Used
-Python: Programming Language.
-BeautifulSoup: For web scraping the university's website.
-Telebot: For interacting with the Telegram API.
-SQLAlchemy: To communicate with the database and store user information.
-Future Enhancements
-Course Selection: Students will be able to choose and register for courses directly through the bot (coming soon).
+<br/>
+Technologies Used<br/>
+Python: Programming Language.<br/>
+BeautifulSoup: For web scraping the university's website.<br/>
+Telebot: For interacting with the Telegram API.<br/>
+SQLAlchemy: To communicate with the database and store user information.<br/>
+Future Enhancements<br/>
+Course Selection: Students will be able to choose and register for courses directly through the bot (coming soon).<br/><br/>
 
-Security and Privacy
-This bot collects student information such as student code and national ID to access academic services. However, all data is handled securely, and no personal data is stored or shared.
+Security and Privacy<br/>
+This bot collects student information such as student code and national ID to access academic services. However, all data is handled securely, and no personal data is stored or shared.<br/><br/>
 
-Contribution
-If you would like to contribute to this project:
+Contribution<br/>
+If you would like to contribute to this project:<br/><br/>
 
-Contact
-For any issues or questions, feel free to reach out:
+Contact<br/>
+For any issues or questions, feel free to reach out:<br/><br/>
 
-Email: ahmadizadsajjad@gmail.com
-Telegram ID: [@Sajjad_a_b](https://t.me/sajjad_a_b)
+Email: ahmadizadsajjad@gmail.com<br/>
+Telegram ID: [@Sajjad_a_b](https://t.me/sajjad_a_b)<br/>
