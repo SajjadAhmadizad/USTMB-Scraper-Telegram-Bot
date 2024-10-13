@@ -53,9 +53,9 @@ If you would like to contribute to this project:<br/><br/>
 
 Contact<br/>
 For any issues or questions, feel free to reach out:<br/><br/>
-
-Email: ahmadizadsajjad@gmail.com<br/>
-<a href="https://t.me/sajjad_a_b"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="30" height="30"></a>
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg">
+Gmail: ahmadizadsajjad@gmail.com<br/>
+<a href="https://t.me/sajjad_a_b"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="25" height="25"></a>
 Telegram ID: [@Sajjad_a_b](https://t.me/sajjad_a_b)<br/>
-<a href="https://t.me/ustmb_bot"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="30" height="30"></a>
+<a href="https://t.me/ustmb_bot"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="25" height="25"></a>
 Telegram Bot ID:[@USTMB_bot](https://t.me/ustmb_bot)
