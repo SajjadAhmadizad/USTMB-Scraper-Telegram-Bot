@@ -1,4 +1,4 @@
-University Student Tasks Management Telegram Bot
+University Student Tasks Management Telegram Bot.\n
 This project is a web scraping-based Telegram bot that allows students from [Mazandaran University of Science and Technology(https://ustmb.ac.ir)] to manage their academic tasks easily via Telegram. By simply entering their student code and national ID, students can access various services Such as viewing the lessons offered, checking the transcripts and more.
 
 Features
@@ -17,15 +17,17 @@ To run this bot on your local machine, follow these steps:
 Clone the repository:
 
 bash
+```
 Copy code
 git clone [https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot](https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot)
 cd USTMB-Scraper-Telegram-Bot
+```
 Install required dependencies:
-
+```
 bash
 Copy code
 pip install -r requirements.txt
-
+```
 ش
 Set up your environment variables:
 
@@ -34,10 +36,11 @@ DATABASE_URL: Your database url.
 TERM_CODE: Current term code(like 14031 or 14022).
 
 And then Run the bot:
+```
 bash
 Copy code
 python TelegramBot/main.py
-
+```
 Technologies Used
 Python: Programming Language.
 BeautifulSoup: For web scraping the university's website.
