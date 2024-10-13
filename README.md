@@ -1,5 +1,5 @@
 <h3>University Student Tasks Management Telegram Bot.</h3><br/>
-This project is a web scraping-based Telegram bot that allows students from [Mazandaran University of Science and Technology](https://ustmb.ac.ir) to manage their academic tasks easily via Telegram. By simply entering their student code and national ID, students can access various services Such as viewing the lessons offered, checking the transcripts and more.<br/><br/>
+This project is a web scraping-based Telegram bot that allows students from <a href="https://ustmb.ac.ir">Mazandaran University of Science and Technology</a> to manage their academic tasks easily via Telegram. By simply entering their student code and national ID, students can access various services Such as viewing the lessons offered, checking the transcripts and more.<br/><br/>
 
 Features<br/>
 View Offered Courses: Students can see the list of courses available for the current term.<br/>
@@ -37,7 +37,7 @@ python TelegramBot/main.py
 ```
 <br/>
 <strong>Technologies Used</strong><br/>
-![Python Icon](https://www.python.org/static/community_logos/python-logo-master-v3-TM.png)
+<img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" wirth="50" height="50">
 Python: Programming Language.<br/>
 BeautifulSoup: For web scraping the university's website.<br/>
 Telebot: For interacting with the Telegram API.<br/>
@@ -55,7 +55,7 @@ Contact<br/>
 For any issues or questions, feel free to reach out:<br/><br/>
 
 Email: ahmadizadsajjad@gmail.com<br/>
-![Telegram Icon](https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg)
+<a href="https://t.me/sajjad_a_b"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="50" height="50"></a>
 Telegram ID: [@Sajjad_a_b](https://t.me/sajjad_a_b)<br/>
-![Telegram Icon](https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg)
+<a href="https://t.me/ustmb_bot"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="50" height="50"></a>
 Telegram Bot ID:[@USTMB_bot](https://t.me/ustmb_bot)
