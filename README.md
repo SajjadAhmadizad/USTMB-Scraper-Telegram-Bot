@@ -55,7 +55,7 @@ Contact<br/>
 For any issues or questions, feel free to reach out:<br/><br/>
 
 Email: ahmadizadsajjad@gmail.com<br/>
-<a href="https://t.me/sajjad_a_b"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="50" height="50"></a>
+<a href="https://t.me/sajjad_a_b"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="30" height="30"></a>
 Telegram ID: [@Sajjad_a_b](https://t.me/sajjad_a_b)<br/>
-<a href="https://t.me/ustmb_bot"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="50" height="50"></a>
+<a href="https://t.me/ustmb_bot"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" wirth="30" height="30"></a>
 Telegram Bot ID:[@USTMB_bot](https://t.me/ustmb_bot)
