@@ -17,7 +17,7 @@ To run this bot on your local machine, follow these steps:<br/>
 Clone the repository:<br/>
 
 ```bash
-git clone [https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot](https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot)
+git clone https://github.com/SajjadAhmadizad/USTMB-Scraper-Telegram-Bot
 cd USTMB-Scraper-Telegram-Bot
 ```
 Install required dependencies:<br/>
