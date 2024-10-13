@@ -1,13 +1,13 @@
 <h3>University Student Tasks Management Telegram Bot.</h3><br/>
 This project is a web scraping-based Telegram bot that allows students from <a href="https://ustmb.ac.ir">Mazandaran University of Science and Technology</a> to manage their academic tasks easily via Telegram. By simply entering their student code and national ID, students can access various services Such as viewing the lessons offered, checking the transcripts and more.<br/><br/>
 
-Features<br/>
+Features❇️<br/>
 View Offered Courses: Students can see the list of courses available for the current term.<br/>
 View Temporary Transcript: Check grades of the current term in real-time.<br/>
 View Complete Transcript: Access full academic records, including all past grades.<br/>
 Class Selection (Coming Soon): Soon, students will be able to select courses for the next term directly from the bot.<br/><br/>
 
-How It Works<br/>
+How It Works❓<br/>
 Login: Students enter their student code and national ID to log in.<br/>
 Task Selection: After login, students can select the service they want (view courses, check transcripts, etc.).<br/>
 Response: The bot scrapes the university website and returns the requested information to the user.<br/>
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 ```
 <br/>
 Set up your environment variables:
-<br/>
+<br/><br/>
 TELEGRAM_BOT_TOKEN: Your bot's Telegram API token.<br/>
 DATABASE_URL: Your database url.<br/>
 TERM_CODE: Current term code(like 14031 or 14022).<br/><br/>
@@ -45,10 +45,10 @@ SQLAlchemy: To communicate with the database and store user information.<br/>
 Future Enhancements<br/>
 Course Selection: Students will be able to choose and register for courses directly through the bot (coming soon).<br/><br/>
 
-Security and Privacy<br/>
+Security and Privacy🔐<br/>
 This bot collects student information such as student code and national ID to access academic services. However, all data is handled securely, and no personal data is stored or shared.<br/><br/>
 
-Contact<br/>
+Contact📞<br/>
 For any issues or questions, feel free to reach out:<br/><br/>
 <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" width="20" height="20">
 Gmail: ahmadizadsajjad@gmail.com<br/>
