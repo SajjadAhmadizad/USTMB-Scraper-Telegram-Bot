@@ -48,9 +48,6 @@ Course Selection: Students will be able to choose and register for courses direc
 Security and Privacy<br/>
 This bot collects student information such as student code and national ID to access academic services. However, all data is handled securely, and no personal data is stored or shared.<br/><br/>
 
-Contribution<br/>
-If you would like to contribute to this project:<br/><br/>
-
 Contact<br/>
 For any issues or questions, feel free to reach out:<br/><br/>
 <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" width="20" height="20">
