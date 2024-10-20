@@ -41,8 +41,8 @@ python TelegramBot/main.py
 Python: Programming Language.<br/>
 BeautifulSoup: For web scraping the university's website.<br/>
 Telebot: For interacting with the Telegram API.<br/>
-SQLAlchemy: To communicate with the database and store user information.<br/>
-Future Enhancements<br/>
+SQLAlchemy: To communicate with the database and store user information.<br/><br/>
+Future Enhancements⏳<br/>
 Course Selection: Students will be able to choose and register for courses directly through the bot (coming soon).<br/><br/>
 
 Security and Privacy🔐<br/>
@@ -55,4 +55,4 @@ Gmail: ahmadizadsajjad@gmail.com<br/>
 <a href="https://t.me/sajjad_a_b"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" width="20" height="20"></a>
 Telegram ID: [@Sajjad_a_b](https://t.me/sajjad_a_b)<br/>
 <a href="https://t.me/ustmb_bot"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" width="20" height="20"></a>
-Telegram Bot ID:[@USTMB_bot](https://t.me/ustmb_bot)
+Telegram Bot ID:[@USTMB_bot](https://t.me/ustmb_bot)(It is currently off)
