@@ -8,7 +8,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from scrap import *
+from scrape import *
 from functools import wraps
 from config import TELEGRAM_BOT_TOKEN
 from buttons import start_markup, select_delete_unit_markup, cancel_inline_markup, lesson_search_markup, \
