@@ -20,8 +20,17 @@ def start_markup():
     kb.add(InlineKeyboardButton("تائیدیه انتخاب واحد", callback_data="unit_select_confirmation"))
     kb.add(InlineKeyboardButton("دریافت کارنامه موقت", callback_data="lesson_term_work_report"))
     kb.add(InlineKeyboardButton("دریافت کارنامه کامل", callback_data="lesson_term_work_report"))
+    kb.add(InlineKeyboardButton("اطلاعات کاربری", callback_data="user_info"))
     return kb
 
+
+def change_user_info_markup():
+    kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    kb.row(
+        InlineKeyboardButton("تغییر شماره دانشجویی و رمز عبور", callback_data="remove_lesson")
+    )
+    kb.add(InlineKeyboardButton("بازگشت به منو اصلی", callback_data="rollback_to_menu"))
+    return kb
 
 def select_delete_unit_markup():
     kb = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)

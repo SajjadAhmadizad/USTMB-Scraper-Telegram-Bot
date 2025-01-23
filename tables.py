@@ -10,7 +10,7 @@ load_dotenv()
 engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 Base = declarative_base()
 
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine, expire_on_commit=False)
 session = Session()
 
 
@@ -59,8 +59,8 @@ class StudentSession(Base):
 
 
 if __name__ == "__main__":
-    pass
-    Base.metadata.create_all(engine)
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(bind=engine)
 
     # INSERT DATA
 
@@ -76,9 +76,6 @@ if __name__ == "__main__":
     #     ASPXAUTH="YYYYY",
     #     expires_at=datetime.datetime.now() + datetime.timedelta(10)
     # )
-    # kos.add(new_session)
-    # kos.commit()
-
     # SELECT DATA
 
     # query = session.query(

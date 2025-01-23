@@ -1,7 +1,7 @@
 import time
 
 import telebot
-from telebot import custom_filters, StateMemoryStorage
+from telebot import custom_filters, StateMemoryStorage,apihelper
 from telebot.states import StatesGroup, State
 from telebot.types import ReplyKeyboardRemove, CallbackQuery
 import sys
@@ -12,12 +12,17 @@ from scrape import *
 from functools import wraps
 from config import TELEGRAM_BOT_TOKEN
 from buttons import start_markup, select_delete_unit_markup, cancel_inline_markup, lesson_search_markup, \
-    authentication_markup
+    authentication_markup, change_user_info_markup
 from tables import Student, StudentSession, sessionmaker, create_engine, exists, and_
 
 state_storage = StateMemoryStorage()
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN, state_storage=state_storage)
+if bool(int(os.getenv("SET_PROXY"))):
+    apihelper.proxy = {
+        "http": f"http://{os.getenv('PROXY_HOST')}:{os.getenv('PROXY_PORT')}",
+        "https": f"http://{os.getenv('PROXY_HOST')}:{os.getenv('PROXY_PORT')}",
+    }
 
 engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 Session = sessionmaker(bind=engine)
@@ -38,15 +43,16 @@ class MyStates(StatesGroup):
 def restrict_access(func):
     @wraps(func)
     def wrapped(message, *args, **kwargs):
-        student = session.query(
-            Student
-        ).filter(
-            Student.telegram_id == message.from_user.id
-        ).first()
-        if student is None:
-            bot.send_message(message.chat.id, "ابتدا باید احراز هویت کنید...", reply_markup=authentication_markup())
-            return
-        return func(message, *args, **kwargs)
+        with session.no_autoflush:
+            student = session.query(
+                Student
+            ).filter(
+                Student.telegram_id == message.from_user.id
+            ).first()
+            if student is None:
+                bot.send_message(message.chat.id, "ابتدا باید احراز هویت کنید...", reply_markup=authentication_markup())
+                return
+            return func(message, *args, **kwargs)
 
     return wrapped
 
@@ -95,6 +101,87 @@ def receive_national_code(message, new_student: Student):
         bot.send_message(
             message.chat.id, "ورودی نادرست است!"
         )
+
+@bot.message_handler(func=lambda message: message.text == "اطلاعات کاربری")
+@restrict_access
+def get_user_information(message):
+    user_student_code = session.query(
+        Student.student_code
+    ).filter(
+        Student.telegram_id == message.from_user.id
+    ).scalar()
+
+    msg = bot.send_message(
+        message.chat.id,
+        text=f"""شماره دانشجویی فعلی : {user_student_code}
+            برای تغییر کلیک کنید:
+            """,
+        reply_markup=change_user_info_markup()
+    )
+    with bot.retrieve_data(message.from_user.id) as user_data:
+        user_data["last_message"] = msg
+    bot.register_next_step_handler(msg, change_user_student_code)
+
+
+@restrict_access
+def change_user_student_code(message):
+    with bot.retrieve_data(message.from_user.id) as user_data:
+        print(user_data.get("cancel_status"))
+        if message.text == "بازگشت به منو اصلی":
+            bot.send_message(message.chat.id, "شما به منوی اصلی بازگشتید.", reply_markup=start_markup())
+            return
+        if message.text == "تغییر شماره دانشجویی و رمز عبور":
+            msg = bot.send_message(
+                chat_id=message.chat.id,
+                text="شماره دانشجویی جدید را وارد کنید",
+                reply_markup=cancel_inline_markup()
+            )
+            bot.register_next_step_handler(message, change_user_password, )
+        else:
+            msg = bot.send_message(
+                chat_id=message.chat.id,
+                text="ورودی نادرست است!\nبه منوی اصلی بازگشتید",
+                reply_markup = start_markup()
+            )
+            return
+
+
+@restrict_access
+def change_user_password(message):
+    print(message.text)
+    if not message.text.isdigit():
+        bot.send_message(
+            message.chat.id,
+            "ورودی نا معتبر است\nبه منوی اصلی بازگشتید",
+            reply_markup=start_markup()
+        )
+        return
+    new_student_code=int(message.text)
+
+    bot.send_message(
+        message.chat.id,
+        "رمز عبور جدید را وارد کنید:"
+
+    )
+    bot.register_next_step_handler(message, change_information, new_student_code)
+
+@restrict_access
+def change_information(message, student_code):
+    new_password = message.text
+    print(new_password)
+    student = session.query(Student).filter(Student.telegram_id == message.from_user.id).first()
+
+    if student:
+        student.national_code = int(new_password)
+        student.student_code = int(student_code)
+
+        student_session = session.query(StudentSession).filter_by(id=student.id).first()
+        if student_session:
+            session.delete(student_session)
+        session.commit()
+
+    bot.send_message(message.chat.id,"Done")
+    return
 
 
 @bot.message_handler(func=lambda message: message.text == "انتخاب واحد")

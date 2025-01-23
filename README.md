@@ -37,7 +37,7 @@ python TelegramBot/main.py
 ```
 <br/>
 <strong>Technologies Used</strong><br/>
-<img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" wirth="50" height="50">
+<img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" height="50">
 Python: Programming Language.<br/>
 BeautifulSoup: For web scraping the university's website.<br/>
 Telebot: For interacting with the Telegram API.<br/>

@@ -3,14 +3,9 @@ import datetime
 import os
 import hashlib
 import re
-import arabic_reshaper
-from bidi.algorithm import get_display
 from dotenv import load_dotenv
 import requests
-import pickle
 from bs4 import BeautifulSoup
-import tabulate
-from soupsieve import select
 
 from tables import Student, StudentSession, create_engine, sessionmaker
 
@@ -94,6 +89,7 @@ def login(student: Student):
             "Menu": None,
             "SL_G_WPT_TO": "en",
         }
+        print(second_login_res.headers)
 
         # Add this session in database for user
         if student_session:
@@ -292,8 +288,9 @@ def get_my_courses_in_this_semester(user_id: int):
 def get_unit_confirmation(user_id: int | None = None):
     payload = {
         "strTermCode": os.environ.get("TERM_CODE"),
-        "strStudentCode": os.environ.get("USER_CODE")
+        "strStudentCode": session.query(Student.student_code).filter(Student.telegram_id == user_id).scalar()
     }
+    print(payload)
     try:
         response = request_to_url_with_cookie_or_login(
             "https://amoozesh.ustmb.ac.ir/SamaWeb/WorkBookPrintTerm.asp",
@@ -303,8 +300,7 @@ def get_unit_confirmation(user_id: int | None = None):
         )  # => If there is a problem in the request to https://amoozesh.ustmb.ac.ir, it returns ConnectionError
 
         student_image = get_student_image_with_cookies(
-            response.get("cookies"),
-            # user_id
+            response.get("cookies")
         )  # => If there is a problem getting student image, it returns ConnectionError
 
         soup: BeautifulSoup = BeautifulSoup(response.get("response").content.decode("utf-8"), 'html.parser')
@@ -317,7 +313,9 @@ def get_unit_confirmation(user_id: int | None = None):
             # Remove script tags on the page
             script_tag.extract()
 
-        with open(file_address := f"../data/{user_id}.html", "wb") as file:
+        file_address = f"data/{user_id}.html"
+        os.makedirs(os.path.dirname(file_address), exist_ok=True)
+        with open(file_address, "wb") as file:
             file.write(soup.encode())
             return {
                 "status": "OK",
